@@ -16,8 +16,13 @@ Memory search tools are provided by the active memory plugin (default:
 
 ## Memory files (Markdown)
 
-The default workspace layout uses two memory layers:
+The default workspace layout uses three memory layers:
 
+- `TASK.md` (**new**)
+  - Current task state: goal, progress, next steps.
+  - **Your anchor after compaction** — tells future-you exactly where to resume.
+  - Read at every session start (before daily logs).
+  - Updated during pre-compaction context save.
 - `memory/YYYY-MM-DD.md`
   - Daily log (append-only).
   - Read today + yesterday at session start.
@@ -28,20 +33,58 @@ The default workspace layout uses two memory layers:
 These files live under the workspace (`agents.defaults.workspace`, default
 `~/.openclaw/workspace`). See [Agent workspace](/concepts/agent-workspace) for the full layout.
 
+## TASK.md — The Task Anchor
+
+`TASK.md` solves the "what were we working on?" problem after compaction.
+While `MEMORY.md` stores curated wisdom and daily logs capture raw notes,
+`TASK.md` captures **current work state**:
+
+```markdown
+# Current Task
+
+## Goal
+[What you're trying to accomplish RIGHT NOW]
+
+## Progress
+### Done
+- [x] Completed items
+
+### In Progress
+- [ ] Current work
+
+### Blocked
+- Issues or "(none)"
+
+## Critical Context
+[Data, file paths, decisions needed to continue]
+
+## Next Steps
+1. [Most important next action]
+2. [Second priority]
+```
+
+The pre-compaction context save automatically prompts the model to update
+`TASK.md` so the goal and progress survive summarization.
+
 ## When to write memory
 
-- Decisions, preferences, and durable facts go to `MEMORY.md`.
-- Day-to-day notes and running context go to `memory/YYYY-MM-DD.md`.
+- **Current task state** (goal, progress, next steps) → `TASK.md`
+- Decisions, preferences, and durable facts → `MEMORY.md`
+- Day-to-day notes and running context → `memory/YYYY-MM-DD.md`
 - If someone says "remember this," write it down (do not keep it in RAM).
 - This area is still evolving. It helps to remind the model to store memories; it will know what to do.
 - If you want something to stick, **ask the bot to write it** into memory.
 
-## Automatic memory flush (pre-compaction ping)
+## Automatic context save (pre-compaction)
 
 When a session is **close to auto-compaction**, OpenClaw triggers a **silent,
-agentic turn** that reminds the model to write durable memory **before** the
-context is compacted. The default prompts explicitly say the model _may reply_,
-but usually `NO_REPLY` is the correct response so the user never sees this turn.
+agentic turn** that reminds the model to save **both task state and durable
+memory** before the context is compacted. This prevents the "what were we
+working on?" problem after compaction.
+
+The default prompts now capture:
+1. **Task state** → `TASK.md` (goal, progress, next steps)
+2. **Durable memories** → `memory/YYYY-MM-DD.md`
 
 This is controlled by `agents.defaults.compaction.memoryFlush`:
 
@@ -54,8 +97,8 @@ This is controlled by `agents.defaults.compaction.memoryFlush`:
         memoryFlush: {
           enabled: true,
           softThresholdTokens: 4000,
-          systemPrompt: "Session nearing compaction. Store durable memories now.",
-          prompt: "Write any lasting notes to memory/YYYY-MM-DD.md; reply with NO_REPLY if nothing to store.",
+          systemPrompt: "Pre-compaction context save. Capture task state AND durable memories.",
+          prompt: "1. Update TASK.md with goal, progress, next steps. 2. Write insights to memory/. Reply NO_REPLY."
         },
       },
     },
