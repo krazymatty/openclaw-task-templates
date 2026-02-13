@@ -15,8 +15,13 @@ Memory search tools are provided by the active memory plugin (default:
 
 ## Memory files (Markdown)
 
-The default workspace layout uses two memory layers:
+The default workspace layout uses three memory layers:
 
+- `TASK.md` (**new**)
+  - Current task state: goal, progress, next steps.
+  - **Your anchor after compaction** — tells future-you exactly where to resume.
+  - Read at every session start (before daily logs).
+  - Updated during pre-compaction context save.
 - `memory/YYYY-MM-DD.md`
   - Daily log (append-only).
   - Read today + yesterday at session start.
@@ -37,29 +42,22 @@ While `MEMORY.md` stores curated wisdom and daily logs capture raw notes,
 # Current Task
 
 ## Goal
-
 [What you're trying to accomplish RIGHT NOW]
 
 ## Progress
-
 ### Done
-
 - [x] Completed items
 
 ### In Progress
-
 - [ ] Current work
 
 ### Blocked
-
 - Issues or "(none)"
 
 ## Critical Context
-
 [Data, file paths, decisions needed to continue]
 
 ## Next Steps
-
 1. [Most important next action]
 2. [Second priority]
 ```
@@ -69,13 +67,14 @@ The pre-compaction context save automatically prompts the model to update
 
 ## When to write memory
 
-- Decisions, preferences, and durable facts go to `MEMORY.md`.
-- Day-to-day notes and running context go to `memory/YYYY-MM-DD.md`.
+- **Current task state** (goal, progress, next steps) → `TASK.md`
+- Decisions, preferences, and durable facts → `MEMORY.md`
+- Day-to-day notes and running context → `memory/YYYY-MM-DD.md`
 - If someone says "remember this," write it down (do not keep it in RAM).
 - This area is still evolving. It helps to remind the model to store memories; it will know what to do.
 - If you want something to stick, **ask the bot to write it** into memory.
 
-## Automatic memory flush (pre-compaction ping)
+## Automatic context save (pre-compaction)
 
 When a session is **close to auto-compaction**, OpenClaw triggers a **silent,
 agentic turn** that reminds the model to save **both task state and durable
@@ -83,7 +82,6 @@ memory** before the context is compacted. This prevents the "what were we
 working on?" problem after compaction.
 
 The default prompts now capture:
-
 1. **Task state** → `TASK.md` (goal, progress, next steps)
 2. **Durable memories** → `memory/YYYY-MM-DD.md`
 
@@ -99,7 +97,7 @@ This is controlled by `agents.defaults.compaction.memoryFlush`:
           enabled: true,
           softThresholdTokens: 4000,
           systemPrompt: "Pre-compaction context save. Capture task state AND durable memories.",
-          prompt: "1. Update TASK.md with goal, progress, next steps. 2. Write insights to memory/. Reply NO_REPLY.",
+          prompt: "1. Update TASK.md with goal, progress, next steps. 2. Write insights to memory/. Reply NO_REPLY."
         },
       },
     },
@@ -157,7 +155,7 @@ out to QMD for retrieval. Key points:
 
 - Disabled by default. Opt in per-config (`memory.backend = "qmd"`).
 - Install the QMD CLI separately (`bun install -g https://github.com/tobi/qmd` or grab
-  a release) and make sure the `qmd` binary is on the gateway’s `PATH`.
+  a release) and make sure the `qmd` binary is on the gateway's `PATH`.
 - QMD needs an SQLite build that allows extensions (`brew install sqlite` on
   macOS).
 - QMD runs fully locally via Bun + `node-llama-cpp` and auto-downloads GGUF
@@ -174,7 +172,7 @@ out to QMD for retrieval. Key points:
   `~/.openclaw/agents/<agentId>/qmd/` (config + cache + sqlite DB).
 - Collections are rewritten from `memory.qmd.paths` (plus default workspace
   memory files) into `index.yml`, then `qmd update` + `qmd embed` run on boot and
-  on a configurable interval (`memory.qmd.update.interval`, default 5 m).
+  on a configurable interval (`memory.qmd.update.interval`, default 5 m).
 - Searches run via `qmd query --json`. If QMD fails or the binary is missing,
   OpenClaw automatically falls back to the builtin SQLite manager so memory tools
   keep working.
@@ -182,9 +180,9 @@ out to QMD for retrieval. Key points:
   expansion) on the first `qmd query` run.
   - OpenClaw sets `XDG_CONFIG_HOME`/`XDG_CACHE_HOME` automatically when it runs QMD.
   - If you want to pre-download models manually (and warm the same index OpenClaw
-    uses), run a one-off query with the agent’s XDG dirs.
+    uses), run a one-off query with the agent's XDG dirs.
 
-    OpenClaw’s QMD state lives under your **state dir** (defaults to `~/.openclaw`).
+    OpenClaw's QMD state lives under your **state dir** (defaults to `~/.openclaw`).
     You can point `qmd` at the exact same index by exporting the same XDG vars
     OpenClaw uses:
 
@@ -259,7 +257,7 @@ memory: {
 
 - `memory.citations` applies regardless of backend (`auto`/`on`/`off`).
 - When `qmd` runs, we tag `status().backend = "qmd"` so diagnostics show which
-  engine served the results. If the QMD subprocess exits or JSON output can’t be
+  engine served the results. If the QMD subprocess exits or JSON output can't be
   parsed, the search manager logs a warning and returns the builtin provider
   (existing Markdown embeddings) until QMD recovers.
 
