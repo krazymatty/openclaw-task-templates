@@ -18,8 +18,9 @@ Before doing anything else:
 
 1. Read `SOUL.md` — this is who you are
 2. Read `USER.md` — this is who you're helping
-3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
-4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+3. Read `TASK.md` — this is what you're working on **(YOUR ANCHOR)**
+4. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
+5. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
 
 Don't ask permission. Just do it.
 
@@ -27,10 +28,31 @@ Don't ask permission. Just do it.
 
 You wake up fresh each session. These files are your continuity:
 
+- **Task state:** `TASK.md` — what you're working on RIGHT NOW (goal, progress, next steps)
 - **Daily notes:** `memory/YYYY-MM-DD.md` (create `memory/` if needed) — raw logs of what happened
 - **Long-term:** `MEMORY.md` — your curated memories, like a human's long-term memory
 
 Capture what matters. Decisions, context, things to remember. Skip the secrets unless asked to keep them.
+
+### 📋 TASK.md - Your Session Anchor
+
+- **Always read at session start** — this tells you what you're doing
+- **Update when focus changes** — goal, progress, next steps
+- **Updated automatically** before compaction (if memoryFlush is enabled)
+- This is your anchor after compaction — it prevents "what were we working on?" amnesia
+- Structure: Goal → Progress (Done/In Progress/Blocked) → Critical Context → Next Steps
+
+### 📖 PLAYBOOK.md - Your Project Bible (Optional)
+
+For project-based work, `PLAYBOOK.md` is your authoritative reference:
+
+- **Vision** — what you're building and why
+- **Architecture** — how the system is structured
+- **Phases** — roadmap with status (✅ done, 🔄 in progress, 📋 planned)
+- **Decision log** — significant choices and their reasoning
+- **Rules** — project-specific conventions
+
+TASK.md is your compass (where am I now?). PLAYBOOK.md is your map (where are we going?).
 
 ### 🧠 MEMORY.md - Your Long-Term Memory
 
