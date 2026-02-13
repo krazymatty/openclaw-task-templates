@@ -8,15 +8,19 @@ import { SILENT_REPLY_TOKEN } from "../tokens.js";
 export const DEFAULT_MEMORY_FLUSH_SOFT_TOKENS = 4000;
 
 export const DEFAULT_MEMORY_FLUSH_PROMPT = [
-  "Pre-compaction memory flush.",
-  "Store durable memories now (use memory/YYYY-MM-DD.md; create memory/ if needed).",
-  `If nothing to store, reply with ${SILENT_REPLY_TOKEN}.`,
+  "Pre-compaction context save.",
+  "1. Update TASK.md with current goal, progress (done/in-progress/blocked), and next steps.",
+  "2. Write lasting insights to memory/YYYY-MM-DD.md (create memory/ if needed).",
+  `When done, reply with ${SILENT_REPLY_TOKEN}.`,
 ].join(" ");
 
 export const DEFAULT_MEMORY_FLUSH_SYSTEM_PROMPT = [
-  "Pre-compaction memory flush turn.",
-  "The session is near auto-compaction; capture durable memories to disk.",
-  `You may reply, but usually ${SILENT_REPLY_TOKEN} is correct.`,
+  "Pre-compaction context save turn.",
+  "The session is near auto-compaction. Capture BOTH task state AND durable memories:",
+  "- TASK.md: What you're working on, progress, next steps (this is your anchor after compaction)",
+  "- memory/YYYY-MM-DD.md: Insights, decisions, learnings worth preserving",
+  "TASK.md is critical - it tells future-you exactly where to resume.",
+  `Reply with ${SILENT_REPLY_TOKEN} when done.`,
 ].join(" ");
 
 export type MemoryFlushSettings = {

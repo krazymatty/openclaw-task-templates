@@ -25,6 +25,7 @@ export const DEFAULT_IDENTITY_FILENAME = "IDENTITY.md";
 export const DEFAULT_USER_FILENAME = "USER.md";
 export const DEFAULT_HEARTBEAT_FILENAME = "HEARTBEAT.md";
 export const DEFAULT_BOOTSTRAP_FILENAME = "BOOTSTRAP.md";
+export const DEFAULT_TASK_FILENAME = "TASK.md";
 export const DEFAULT_MEMORY_FILENAME = "MEMORY.md";
 export const DEFAULT_MEMORY_ALT_FILENAME = "memory.md";
 
@@ -62,6 +63,7 @@ export type WorkspaceBootstrapFileName =
   | typeof DEFAULT_IDENTITY_FILENAME
   | typeof DEFAULT_USER_FILENAME
   | typeof DEFAULT_HEARTBEAT_FILENAME
+  | typeof DEFAULT_TASK_FILENAME
   | typeof DEFAULT_BOOTSTRAP_FILENAME
   | typeof DEFAULT_MEMORY_FILENAME
   | typeof DEFAULT_MEMORY_ALT_FILENAME;
@@ -264,6 +266,10 @@ export async function loadWorkspaceBootstrapFiles(dir: string): Promise<Workspac
     {
       name: DEFAULT_HEARTBEAT_FILENAME,
       filePath: path.join(resolvedDir, DEFAULT_HEARTBEAT_FILENAME),
+    },
+    {
+      name: DEFAULT_TASK_FILENAME,
+      filePath: path.join(resolvedDir, DEFAULT_TASK_FILENAME),
     },
     {
       name: DEFAULT_BOOTSTRAP_FILENAME,
